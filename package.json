@@ -99,7 +99,7 @@
         "compile:webpack": "webpack --mode production",
         "license-check": "npx license-checker --production --excludePrivatePackages --summary",
         "lint": "eslint .",
-        "test": "jest",
+        "test": "jest test/live-connection.ts --runInBand --detectOpenHandles",
         "validate": "npm ls"
     }
 }
