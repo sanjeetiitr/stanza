@@ -7,10 +7,9 @@
  * - uuid, Copyright (c) 2010-2016 Robert Kieffer and other contributors
  */
 
-// tslint:disable no-bitwise
-
-// expo random support all platforms
 import * as Random from 'expo-random';
+
+// tslint:disable no-bitwise
 
 const bth: string[] = [];
 for (let i = 0; i < 256; ++i) {
