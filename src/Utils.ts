@@ -7,7 +7,7 @@
  * - uuid, Copyright (c) 2010-2016 Robert Kieffer and other contributors
  */
 
-import * as Random from 'expo-random';
+const Random = require('expo-random');
 
 // tslint:disable no-bitwise
 
