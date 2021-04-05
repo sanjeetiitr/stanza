@@ -20,7 +20,7 @@
         "react-native-randombytes": "^3.5.3",
         "readable-stream": "^2.3.6",
         "sdp": "^3.0.2",
-        "stanza-shims": "https://github.com/sanjeetiitr/stanza-shims/tarball/expo-support",
+        "stanza-shims": "https://github.com/sanjeetiitr/stanza-shims/tarball/expo-support2",
         "tslib": "^1.9.3",
         "ws": "^7.2.1"
     },
