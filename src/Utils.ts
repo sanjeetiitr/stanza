@@ -9,7 +9,8 @@
 
 // tslint:disable no-bitwise
 
-import { randomBytes } from 'stanza-shims';
+// expo random support all platforms
+import * as Random from 'expo-random';
 
 const bth: string[] = [];
 for (let i = 0; i < 256; ++i) {
@@ -46,7 +47,7 @@ export function octetCompare(str1: string | Buffer, str2: string | Buffer): numb
 }
 
 export function uuid() {
-    const buf = randomBytes(16);
+    const buf = Random.getRandomBytes(16);
 
     // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
     buf[6] = (buf[6] & 0x0f) | 0x40;
