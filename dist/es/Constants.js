@@ -1,4 +1,11 @@
-import { NS_BOSH, NS_CLIENT, NS_COMPONENT, NS_JINGLE_FILE_TRANSFER_5, NS_JINGLE_RTP_INFO_1, NS_SERVER } from './Namespaces';
+import {
+    NS_BOSH,
+    NS_CLIENT,
+    NS_COMPONENT,
+    NS_JINGLE_FILE_TRANSFER_5,
+    NS_JINGLE_RTP_INFO_1,
+    NS_SERVER
+} from './Namespaces';
 export const VERSION = '12.15.0';
 // ====================================================================
 // Frequently Used Values

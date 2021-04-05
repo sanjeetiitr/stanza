@@ -1,10 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const tslib_1 = require("tslib");
-const Constants_1 = require("../Constants");
-const JID = tslib_1.__importStar(require("../JID"));
-const Namespaces_1 = require("../Namespaces");
-const Utils_1 = require("../Utils");
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
+const tslib_1 = require('tslib');
+const Constants_1 = require('../Constants');
+const JID = tslib_1.__importStar(require('../JID'));
+const Namespaces_1 = require('../Namespaces');
+const Utils_1 = require('../Utils');
 function isMUCPresence(pres) {
     return !!pres.muc;
 }
@@ -84,8 +84,12 @@ function default_1(client) {
         if (!isMUCPresence(pres)) {
             return;
         }
-        const isSelf = pres.muc.statusCodes && pres.muc.statusCodes.indexOf(Constants_1.MUCStatusCode.SelfPresence) >= 0;
-        const isNickChange = pres.muc.statusCodes && pres.muc.statusCodes.indexOf(Constants_1.MUCStatusCode.NickChanged) >= 0;
+        const isSelf =
+            pres.muc.statusCodes &&
+            pres.muc.statusCodes.indexOf(Constants_1.MUCStatusCode.SelfPresence) >= 0;
+        const isNickChange =
+            pres.muc.statusCodes &&
+            pres.muc.statusCodes.indexOf(Constants_1.MUCStatusCode.NickChanged) >= 0;
         if (pres.type === 'error') {
             client.emit('muc:error', pres);
             return;
@@ -95,8 +99,7 @@ function default_1(client) {
             if (isSelf) {
                 if (isNickChange) {
                     client.joinedRooms.set(room, pres.muc.nick);
-                }
-                else {
+                } else {
                     client.emit('muc:leave', pres);
                     client.joinedRooms.delete(room);
                     client.leavingRooms.delete(room);
@@ -129,8 +132,7 @@ function default_1(client) {
             try {
                 nick = await client.getReservedNick(room);
                 client.joiningRooms.set(room, nick);
-            }
-            catch (err) {
+            } catch (err) {
                 throw new Error('Room nick required');
             }
         }
@@ -244,8 +246,10 @@ function default_1(client) {
                 if (!allowed.has(JID.toBare(pres.from))) {
                     return;
                 }
-                if (!pres.muc.statusCodes ||
-                    !pres.muc.statusCodes.includes(Constants_1.MUCStatusCode.SelfPresence)) {
+                if (
+                    !pres.muc.statusCodes ||
+                    !pres.muc.statusCodes.includes(Constants_1.MUCStatusCode.SelfPresence)
+                ) {
                     return;
                 }
                 client.off('muc:available', success);
@@ -260,8 +264,7 @@ function default_1(client) {
                 client.off(`presence:id:${id}`, errorOrNoChange);
                 if (pres.type === 'error') {
                     reject(pres);
-                }
-                else {
+                } else {
                     resolve(pres);
                 }
             }
@@ -280,22 +283,20 @@ function default_1(client) {
             type: 'groupchat'
         });
     };
-    client.getReservedNick = async (room) => {
+    client.getReservedNick = async room => {
         try {
             const info = await client.getDiscoInfo(room, 'x-roomuser-item');
             const identity = info.identities[0];
             if (identity.name) {
                 return identity.name;
-            }
-            else {
+            } else {
                 throw new Error('No nickname reserved');
             }
-        }
-        catch (err) {
+        } catch (err) {
             throw new Error('No nickname reserved');
         }
     };
-    client.requestRoomVoice = (room) => {
+    client.requestRoomVoice = room => {
         client.sendMessage({
             forms: [
                 {
@@ -359,7 +360,7 @@ function default_1(client) {
             type: 'get'
         });
     };
-    client.getRoomConfig = async (room) => {
+    client.getRoomConfig = async room => {
         const result = await client.sendIQ({
             muc: {
                 type: 'configure'
@@ -415,12 +416,12 @@ function default_1(client) {
         }
         return res.rooms;
     };
-    client.setBookmarks = (bookmarks) => {
+    client.setBookmarks = bookmarks => {
         return client.setPrivateData('bookmarks', {
             rooms: bookmarks
         });
     };
-    client.addBookmark = async (bookmark) => {
+    client.addBookmark = async bookmark => {
         const mucs = await client.getBookmarks();
         const updated = [];
         let updatedExisting = false;
@@ -431,8 +432,7 @@ function default_1(client) {
                     ...bookmark
                 });
                 updatedExisting = true;
-            }
-            else {
+            } else {
                 updated.push(muc);
             }
         }
@@ -441,7 +441,7 @@ function default_1(client) {
         }
         return client.setBookmarks(updated);
     };
-    client.removeBookmark = async (jid) => {
+    client.removeBookmark = async jid => {
         const existingMucs = await client.getBookmarks();
         const updated = existingMucs.filter(muc => {
             return !JID.equalBare(muc.jid, jid);

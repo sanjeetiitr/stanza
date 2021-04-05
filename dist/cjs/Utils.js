@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /**
  * Portions of this file are derived from prior work.
  *
@@ -7,7 +7,7 @@
  * Derived from:
  * - uuid, Copyright (c) 2010-2016 Robert Kieffer and other contributors
  */
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, '__esModule', { value: true });
 exports.reviveData = exports.uuid = exports.octetCompare = exports.sleep = exports.timeoutPromise = void 0;
 const Random = require('expo-random');
 // tslint:disable no-bitwise
@@ -86,10 +86,12 @@ function reviveData(key, value) {
     if (DATE_FIELDS.has(key) && value && typeof value === 'string' && ISO_DT.test(value)) {
         return new Date(value);
     }
-    if (value &&
+    if (
+        value &&
         typeof value === 'object' &&
         value.type === 'Buffer' &&
-        Array.isArray(value.data)) {
+        Array.isArray(value.data)
+    ) {
         return Buffer.from(value);
     }
     return value;

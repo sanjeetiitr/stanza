@@ -1,4 +1,4 @@
-import { __awaiter } from "tslib";
+import { __awaiter } from 'tslib';
 import { MUCStatusCode } from '../Constants';
 import * as JID from '../JID';
 import { NS_HATS_0, NS_MUC, NS_MUC_DIRECT_INVITE } from '../Namespaces';
@@ -82,8 +82,10 @@ export default function (client) {
         if (!isMUCPresence(pres)) {
             return;
         }
-        const isSelf = pres.muc.statusCodes && pres.muc.statusCodes.indexOf(MUCStatusCode.SelfPresence) >= 0;
-        const isNickChange = pres.muc.statusCodes && pres.muc.statusCodes.indexOf(MUCStatusCode.NickChanged) >= 0;
+        const isSelf =
+            pres.muc.statusCodes && pres.muc.statusCodes.indexOf(MUCStatusCode.SelfPresence) >= 0;
+        const isNickChange =
+            pres.muc.statusCodes && pres.muc.statusCodes.indexOf(MUCStatusCode.NickChanged) >= 0;
         if (pres.type === 'error') {
             client.emit('muc:error', pres);
             return;
@@ -93,8 +95,7 @@ export default function (client) {
             if (isSelf) {
                 if (isNickChange) {
                     client.joinedRooms.set(room, pres.muc.nick);
-                }
-                else {
+                } else {
                     client.emit('muc:leave', pres);
                     client.joinedRooms.delete(room);
                     client.leavingRooms.delete(room);
@@ -120,38 +121,43 @@ export default function (client) {
             }
         }
     });
-    client.joinRoom = (room, nick, opts = {}) => __awaiter(this, void 0, void 0, function* () {
-        room = JID.toBare(room);
-        client.joiningRooms.set(room, nick || '');
-        if (!nick) {
-            try {
-                nick = yield client.getReservedNick(room);
-                client.joiningRooms.set(room, nick);
-            }
-            catch (err) {
-                throw new Error('Room nick required');
-            }
-        }
-        return new Promise((resolve, reject) => {
-            function joined(pres) {
-                if (JID.equalBare(pres.from, room)) {
-                    client.off('muc:join', joined);
-                    client.off('muc:failed', failed);
-                    resolve(pres);
+    client.joinRoom = (room, nick, opts = {}) =>
+        __awaiter(this, void 0, void 0, function* () {
+            room = JID.toBare(room);
+            client.joiningRooms.set(room, nick || '');
+            if (!nick) {
+                try {
+                    nick = yield client.getReservedNick(room);
+                    client.joiningRooms.set(room, nick);
+                } catch (err) {
+                    throw new Error('Room nick required');
                 }
             }
-            function failed(pres) {
-                if (JID.equalBare(pres.from, room)) {
-                    client.off('muc:join', joined);
-                    client.off('muc:failed', failed);
-                    reject(pres);
+            return new Promise((resolve, reject) => {
+                function joined(pres) {
+                    if (JID.equalBare(pres.from, room)) {
+                        client.off('muc:join', joined);
+                        client.off('muc:failed', failed);
+                        resolve(pres);
+                    }
                 }
-            }
-            client.on('muc:join', joined);
-            client.on('muc:failed', failed);
-            client.sendPresence(Object.assign(Object.assign({}, opts), { muc: Object.assign(Object.assign({}, opts.muc), { type: 'join' }), to: JID.createFull(room, nick) }));
+                function failed(pres) {
+                    if (JID.equalBare(pres.from, room)) {
+                        client.off('muc:join', joined);
+                        client.off('muc:failed', failed);
+                        reject(pres);
+                    }
+                }
+                client.on('muc:join', joined);
+                client.on('muc:failed', failed);
+                client.sendPresence(
+                    Object.assign(Object.assign({}, opts), {
+                        muc: Object.assign(Object.assign({}, opts.muc), { type: 'join' }),
+                        to: JID.createFull(room, nick)
+                    })
+                );
+            });
         });
-    });
     client.leaveRoom = (room, nick, opts = {}) => {
         room = JID.toBare(room);
         nick = nick || client.joinedRooms.get(room);
@@ -178,7 +184,13 @@ export default function (client) {
             }
             client.on('muc:leave', leave);
             client.on('presence:error', leaveError);
-            client.sendPresence(Object.assign(Object.assign({}, opts), { id, to: JID.createFull(room, nick), type: 'unavailable' }));
+            client.sendPresence(
+                Object.assign(Object.assign({}, opts), {
+                    id,
+                    to: JID.createFull(room, nick),
+                    type: 'unavailable'
+                })
+            );
         });
     };
     client.ban = (room, occupantRealJID, reason) => {
@@ -226,8 +238,10 @@ export default function (client) {
                 if (!allowed.has(JID.toBare(pres.from))) {
                     return;
                 }
-                if (!pres.muc.statusCodes ||
-                    !pres.muc.statusCodes.includes(MUCStatusCode.SelfPresence)) {
+                if (
+                    !pres.muc.statusCodes ||
+                    !pres.muc.statusCodes.includes(MUCStatusCode.SelfPresence)
+                ) {
                     return;
                 }
                 client.off('muc:available', success);
@@ -242,8 +256,7 @@ export default function (client) {
                 client.off(`presence:id:${id}`, errorOrNoChange);
                 if (pres.type === 'error') {
                     reject(pres);
-                }
-                else {
+                } else {
                     resolve(pres);
                 }
             }
@@ -262,22 +275,21 @@ export default function (client) {
             type: 'groupchat'
         });
     };
-    client.getReservedNick = (room) => __awaiter(this, void 0, void 0, function* () {
-        try {
-            const info = yield client.getDiscoInfo(room, 'x-roomuser-item');
-            const identity = info.identities[0];
-            if (identity.name) {
-                return identity.name;
-            }
-            else {
+    client.getReservedNick = room =>
+        __awaiter(this, void 0, void 0, function* () {
+            try {
+                const info = yield client.getDiscoInfo(room, 'x-roomuser-item');
+                const identity = info.identities[0];
+                if (identity.name) {
+                    return identity.name;
+                } else {
+                    throw new Error('No nickname reserved');
+                }
+            } catch (err) {
                 throw new Error('No nickname reserved');
             }
-        }
-        catch (err) {
-            throw new Error('No nickname reserved');
-        }
-    });
-    client.requestRoomVoice = (room) => {
+        });
+    client.requestRoomVoice = room => {
         client.sendMessage({
             forms: [
                 {
@@ -341,19 +353,20 @@ export default function (client) {
             type: 'get'
         });
     };
-    client.getRoomConfig = (room) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield client.sendIQ({
-            muc: {
-                type: 'configure'
-            },
-            to: room,
-            type: 'get'
+    client.getRoomConfig = room =>
+        __awaiter(this, void 0, void 0, function* () {
+            const result = yield client.sendIQ({
+                muc: {
+                    type: 'configure'
+                },
+                to: room,
+                type: 'get'
+            });
+            if (!result.muc.form) {
+                throw new Error('No configuration form returned');
+            }
+            return result.muc.form;
         });
-        if (!result.muc.form) {
-            throw new Error('No configuration form returned');
-        }
-        return result.muc.form;
-    });
     client.configureRoom = (room, form = {}) => {
         return client.sendIQ({
             muc: {
@@ -389,41 +402,43 @@ export default function (client) {
             return result.muc.name;
         });
     };
-    client.getBookmarks = () => __awaiter(this, void 0, void 0, function* () {
-        const res = yield client.getPrivateData('bookmarks');
-        if (!res || !res.rooms) {
-            return [];
-        }
-        return res.rooms;
-    });
-    client.setBookmarks = (bookmarks) => {
+    client.getBookmarks = () =>
+        __awaiter(this, void 0, void 0, function* () {
+            const res = yield client.getPrivateData('bookmarks');
+            if (!res || !res.rooms) {
+                return [];
+            }
+            return res.rooms;
+        });
+    client.setBookmarks = bookmarks => {
         return client.setPrivateData('bookmarks', {
             rooms: bookmarks
         });
     };
-    client.addBookmark = (bookmark) => __awaiter(this, void 0, void 0, function* () {
-        const mucs = yield client.getBookmarks();
-        const updated = [];
-        let updatedExisting = false;
-        for (const muc of mucs) {
-            if (JID.equalBare(muc.jid, bookmark.jid)) {
-                updated.push(Object.assign(Object.assign({}, muc), bookmark));
-                updatedExisting = true;
+    client.addBookmark = bookmark =>
+        __awaiter(this, void 0, void 0, function* () {
+            const mucs = yield client.getBookmarks();
+            const updated = [];
+            let updatedExisting = false;
+            for (const muc of mucs) {
+                if (JID.equalBare(muc.jid, bookmark.jid)) {
+                    updated.push(Object.assign(Object.assign({}, muc), bookmark));
+                    updatedExisting = true;
+                } else {
+                    updated.push(muc);
+                }
             }
-            else {
-                updated.push(muc);
+            if (!updatedExisting) {
+                updated.push(bookmark);
             }
-        }
-        if (!updatedExisting) {
-            updated.push(bookmark);
-        }
-        return client.setBookmarks(updated);
-    });
-    client.removeBookmark = (jid) => __awaiter(this, void 0, void 0, function* () {
-        const existingMucs = yield client.getBookmarks();
-        const updated = existingMucs.filter(muc => {
-            return !JID.equalBare(muc.jid, jid);
+            return client.setBookmarks(updated);
         });
-        return client.setBookmarks(updated);
-    });
+    client.removeBookmark = jid =>
+        __awaiter(this, void 0, void 0, function* () {
+            const existingMucs = yield client.getBookmarks();
+            const updated = existingMucs.filter(muc => {
+                return !JID.equalBare(muc.jid, jid);
+            });
+            return client.setBookmarks(updated);
+        });
 }

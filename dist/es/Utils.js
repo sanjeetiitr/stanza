@@ -6,7 +6,7 @@
  * Derived from:
  * - uuid, Copyright (c) 2010-2016 Robert Kieffer and other contributors
  */
-import { __awaiter } from "tslib";
+import { __awaiter } from 'tslib';
 const Random = require('expo-random');
 // tslint:disable no-bitwise
 const bth = [];
@@ -84,10 +84,12 @@ export function reviveData(key, value) {
     if (DATE_FIELDS.has(key) && value && typeof value === 'string' && ISO_DT.test(value)) {
         return new Date(value);
     }
-    if (value &&
+    if (
+        value &&
         typeof value === 'object' &&
         value.type === 'Buffer' &&
-        Array.isArray(value.data)) {
+        Array.isArray(value.data)
+    ) {
         return Buffer.from(value);
     }
     return value;
